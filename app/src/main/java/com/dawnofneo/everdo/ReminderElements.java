@@ -5,7 +5,7 @@ package com.dawnofneo.everdo;
  */
 
 public class ReminderElements {
-String taskOverview;
+    String taskOverview;
     String subtasks;
     String notifyAt;
     String taskLocation;
