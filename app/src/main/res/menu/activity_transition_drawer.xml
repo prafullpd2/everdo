@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_reminder"
+            android:icon="@android:drawable/ic_menu_month"
+            android:title="Reminder" />
+        <item
+            android:id="@+id/nav_schedule"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Schedule" />
+        <item
+            android:id="@+id/nav_alarm"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Alarms" />
+    </group>
+
+    <item android:title="Profile">
+        <menu>
+            <item
+                android:id="@+id/profile_setting"
+                android:icon="@android:drawable/ic_menu_preferences"
+                android:title="Setings" />
+            <item
+                android:id="@+id/logout"
+                android:icon="@drawable/com_facebook_close"
+                android:title="Logout" />
+        </menu>
+    </item>
+
+</menu>

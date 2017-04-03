@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="5sp"
+    android:id="@+id/card_reminder"
+    android:layout_marginBottom="10sp"
+    android:elevation="10sp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10sp"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="0sp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Task Overview"
+                android:id="@+id/card_task_overview"
+
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Subtasks"
+                android:id="@+id/card_subtasks"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="time to notyfy"
+                android:id="@+id/card_notify_time"
+
+                />
+
+            <TextView
+                android:id="@+id/card_task_location"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="location" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0sp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/card_delete"
+                android:text="delete"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="is_done"
+                android:id="@+id/card_is_done"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Start At"
+                android:id="@+id/card_starting_time"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="End At"
+                android:id="@+id/card_end_time"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>
