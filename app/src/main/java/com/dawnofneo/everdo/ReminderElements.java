@@ -16,7 +16,6 @@ public class ReminderElements {
         return taskOverview;
     }
 
-
     public void setTaskOverview(String taskOverview) {
         this.taskOverview = taskOverview;
     }
