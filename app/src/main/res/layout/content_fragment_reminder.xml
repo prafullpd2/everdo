@@ -9,13 +9,6 @@
     android:orientation="vertical"
     tools:showIn="@layout/fragment_reminder">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="hello_blank_fragment_reminder"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp" />
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/reminder_recyclerView"
         android:layout_width="match_parent"

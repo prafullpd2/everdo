@@ -11,6 +11,8 @@ public class ReminderElements {
     String taskLocation;
     String deleteTask;
     String isDone;
+    String startAt;
+    String endAt;
 
     public String getTaskOverview() {
         return taskOverview;
@@ -76,8 +78,7 @@ public class ReminderElements {
         this.endAt = endAt;
     }
 
-    String startAt;
-    String endAt;
+
 
 
 
