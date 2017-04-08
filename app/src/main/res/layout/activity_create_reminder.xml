@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/create_reminder_layout"
     tools:context="com.dawnofneo.everdo.CreateReminder">
 
     <android.support.design.widget.AppBarLayout
@@ -20,8 +21,12 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_create_reminder" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <include layout="@layout/content_create_reminder" />
 
-
+    </ScrollView>
 </android.support.design.widget.CoordinatorLayout>

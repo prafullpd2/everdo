@@ -1,6 +1,7 @@
 package com.dawnofneo.everdo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -28,6 +29,7 @@ public class ReminderFragment extends Fragment {
 
     RecyclerView reminderRecyclerView;
     ReminderRecyclerAdapter adapter;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -86,6 +88,8 @@ public class ReminderFragment extends Fragment {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                Intent intent = new Intent(getActivity(),CreateReminder.class);
+                startActivity(intent);
             }
         });
         return layout;
