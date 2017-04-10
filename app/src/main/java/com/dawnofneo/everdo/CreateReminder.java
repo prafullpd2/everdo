@@ -10,10 +10,12 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -39,19 +41,14 @@ public class CreateReminder extends AppCompatActivity implements TextView.OnClic
 
     PlaceAutocompleteFragment locaitonPickerFragment;
     TextView textView_start_date, textView_end_date, textView_start_time, textView_end_time, textView_notify_date, textView_notify_time;
-
     java.util.Calendar c;
-    int hour;
-    int min;
-    int year;
-    int month;
-    int day;
+    int hour, min, year, month, day, id;
     private String newDateInString;
     String startDate, endDate, notifyDate, startTime, endTime, notifyTime;
     long startDateTime, endDateTime, notifyDateTime;
-    int id;
     private Time timeValue;
 
+    int normalColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,25 +74,65 @@ public class CreateReminder extends AppCompatActivity implements TextView.OnClic
             }
         });
 
-        textView_start_date = (TextView) findViewById(R.id.textView_start_date);
-        textView_end_date = (TextView) findViewById(R.id.textView_end_date);
-        textView_start_time = (TextView) findViewById(R.id.textView_start_time);
-        textView_end_time = (TextView) findViewById(R.id.textView_end_time);
-        textView_notify_date = (TextView) findViewById(R.id.textView_notify_date);
-        textView_notify_time = (TextView) findViewById(R.id.textView_notify_time);
-
-        textView_start_date.setOnClickListener(this);
-        textView_end_date.setOnClickListener(this);
-        textView_start_time.setOnClickListener(this);
-        textView_end_time.setOnClickListener(this);
-        textView_notify_date.setOnClickListener(this);
-        textView_notify_time.setOnClickListener(this);
+        initContents();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
     }
 
+    public void onCheckBoxClick(View view) {
+
+        boolean isChecked = ((CheckBox) view).isChecked();
+
+        switch (view.getId()) {
+
+
+            case R.id.set_time_checkBox:
+                if (isChecked) {
+                    textView_start_date.setClickable(true);
+                    textView_start_time.setClickable(true);
+                    textView_end_date.setClickable(true);
+                    textView_end_time.setClickable(true);
+                    textView_start_date.setTextColor(normalColor);
+                    textView_start_time.setTextColor(normalColor);
+                    textView_end_date.setTextColor(normalColor);
+                    textView_end_time.setTextColor(normalColor);
+
+                } else {
+
+                    textView_start_date.setClickable(false);
+                    textView_start_time.setClickable(false);
+                    textView_end_date.setClickable(false);
+                    textView_end_time.setClickable(false);
+
+                    textView_start_date.setTextColor(ContextCompat.getColor(this, R.color.disabledText));
+                    textView_start_time.setTextColor(ContextCompat.getColor(this, R.color.disabledText));
+                    textView_end_date.setTextColor(ContextCompat.getColor(this, R.color.disabledText));
+                    textView_end_time.setTextColor(ContextCompat.getColor(this, R.color.disabledText));
+                }
+                break;
+
+            case R.id.notify_allDay_checkBox:
+                if (isChecked) {
+                    textView_notify_date.setClickable(false);
+                    textView_notify_time.setClickable(false);
+                    textView_notify_date.setTextColor(ContextCompat.getColor(this, R.color.disabledText));
+                    textView_notify_time.setTextColor(ContextCompat.getColor(this, R.color.disabledText));
+
+
+                } else {
+                    textView_notify_date.setClickable(true);
+                    textView_notify_time.setClickable(true);
+                    textView_notify_date.setTextColor(normalColor);
+                    textView_notify_time.setTextColor(normalColor);
+
+                }
+                break;
+
+        }
+
+    }
 
     @Override
     public void onClick(View v) {
@@ -183,16 +220,16 @@ public class CreateReminder extends AppCompatActivity implements TextView.OnClic
 
         }
         checkForSuitableDateSelection();
+
+
     }
 
     private void checkForSuitableDateSelection() {
         java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("dd/MMM/yyyy, HH:mm:ss");
         formatter.setLenient(false);
-
 //        Date curDate = new Date();
 //        long curMillis = curDate.getTime();
 //        String curTime = formatter.format(curDate);
-
 //        String oldTime = "05.01.2011, 12:45";
         Date date = null;
         try {
@@ -205,23 +242,51 @@ public class CreateReminder extends AppCompatActivity implements TextView.OnClic
             date = formatter.parse(notifyDate + ", " + notifyTime);
             notifyDateTime = date.getTime();
 
-            EditText et = (EditText) findViewById(R.id.editText_task_overview);
-            et.setText(String.valueOf(startDateTime));
-
             Toast.makeText(this, "start:" + startDateTime + ", end:" + endDateTime + ", notify:" + notifyDateTime, Toast.LENGTH_SHORT).show();
 
-            if (notifyDateTime<startDateTime&&startDateTime<endDateTime){
+            if (notifyDateTime < startDateTime && startDateTime < endDateTime) {
 
-            }
-            else{
+            } else {
                 Toast.makeText(this, "Date-Time is not set correctly", Toast.LENGTH_SHORT).show();
                 textView_end_date.setText("Date");
                 textView_end_time.setText("Time");
                 textView_notify_date.setText("Date");
                 textView_notify_time.setText("Time");
             }
+
+            Date curDate = new Date();
+            long curMillis = curDate.getTime();
+
+            if (curMillis <= notifyDateTime) {
+                Toast.makeText(this, "Notify time cant be less than Current Time!", Toast.LENGTH_SHORT).show();
+                textView_notify_date.setText("Date");
+                textView_notify_time.setText("Time");
+            }
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
+
+    private void initContents() {
+        textView_start_date = (TextView) findViewById(R.id.textView_start_date);
+        textView_end_date = (TextView) findViewById(R.id.textView_end_date);
+        textView_start_time = (TextView) findViewById(R.id.textView_start_time);
+        textView_end_time = (TextView) findViewById(R.id.textView_end_time);
+        textView_notify_date = (TextView) findViewById(R.id.textView_notify_date);
+        textView_notify_time = (TextView) findViewById(R.id.textView_notify_time);
+
+        textView_start_date.setOnClickListener(this);
+        textView_end_date.setOnClickListener(this);
+        textView_start_time.setOnClickListener(this);
+        textView_end_time.setOnClickListener(this);
+        textView_notify_date.setOnClickListener(this);
+        textView_notify_time.setOnClickListener(this);
+        normalColor = textView_notify_time.getCurrentTextColor();
+        textView_start_date.setTextColor(ContextCompat.getColor(this, R.color.disabledText));
+        textView_start_time.setTextColor(ContextCompat.getColor(this, R.color.disabledText));
+        textView_end_date.setTextColor(ContextCompat.getColor(this, R.color.disabledText));
+        textView_end_time.setTextColor(ContextCompat.getColor(this, R.color.disabledText));
+    }
+
 }
