@@ -2,6 +2,7 @@ package com.dawnofneo.everdo;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.graphics.Color;
 import android.icu.text.DateFormat;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
@@ -15,9 +16,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -29,6 +32,7 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.sql.Time;
@@ -41,13 +45,18 @@ public class CreateReminder extends AppCompatActivity implements TextView.OnClic
 
     PlaceAutocompleteFragment locaitonPickerFragment;
     TextView textView_start_date, textView_end_date, textView_start_time, textView_end_time, textView_notify_date, textView_notify_time;
+    EditText taskOverView, subTasks;
+    Button saveButton;
+    ImageButton clearTimeDate, clearNotifyTimeDate;
+    LatLng taskLatLang;
+    String taskLocationName;
     java.util.Calendar c;
     int hour, min, year, month, day, id;
     private String newDateInString;
     String startDate, endDate, notifyDate, startTime, endTime, notifyTime;
     long startDateTime, endDateTime, notifyDateTime;
     private Time timeValue;
-
+    CheckBox checkboxDateTime,checkboxNotifyDateTime,checkboxNotifyAt;
     int normalColor;
 
     @Override
@@ -129,6 +138,29 @@ public class CreateReminder extends AppCompatActivity implements TextView.OnClic
 
                 }
                 break;
+            case R.id.checkbox_notifyAt:
+                if (isChecked) {
+                    textView_notify_date.setClickable(true);
+                    textView_notify_time.setClickable(true);
+                    checkboxNotifyDateTime.setClickable(true);
+
+                    textView_notify_date.setTextColor(normalColor);
+                    textView_notify_time.setTextColor(normalColor);
+                    checkboxNotifyDateTime.setTextColor(Color.BLACK);
+
+                } else {
+
+                    textView_notify_date.setClickable(false);
+                    textView_notify_time.setClickable(false);
+                    checkboxNotifyDateTime.setClickable(false);
+
+                    checkboxNotifyDateTime.setTextColor(ContextCompat.getColor(this, R.color.disabledText));
+                    textView_notify_date.setTextColor(ContextCompat.getColor(this, R.color.disabledText));
+                    textView_notify_time.setTextColor(ContextCompat.getColor(this, R.color.disabledText));
+
+
+                }
+                break;
 
         }
 
@@ -147,8 +179,54 @@ public class CreateReminder extends AppCompatActivity implements TextView.OnClic
             month = c.get(java.util.Calendar.MONTH);
             day = c.get(java.util.Calendar.DAY_OF_MONTH);
             makeDateTimeDialogue(id);
+        } else if (id == R.id.imageButton_clearTimeDate) {
+
+            textView_start_date.setText("Date");
+            textView_end_date.setText("Date");
+            textView_start_time.setText("Time");
+            textView_end_time.setText("Time");
+
+
+        } else if (id == R.id.imageButton_clearNotifyTimeDate) {
+
+            textView_notify_date .setText("Date");
+            textView_notify_time.setText("Time");
+
         }
 
+        else if (id == R.id.saveButton) {
+
+            if(checkDataForSaving()){
+
+            }
+            else
+                Toast.makeText(this, "Something wrong is chosen!!!", Toast.LENGTH_SHORT).show();
+
+
+        }
+
+    }
+
+    private boolean checkDataForSaving() {
+        boolean valid = true;
+        Date curDate = new Date();
+        long curMillis = curDate.getTime();
+        if(taskOverView.getText().toString().equals(""))
+            valid = false;
+
+        else if((checkboxNotifyAt.isChecked()==true && notifyDateTime<=curMillis ))
+            valid = false;
+
+        else if(  (checkboxDateTime.isChecked()==true && startDateTime <=curMillis)
+                ||(checkboxDateTime.isChecked()==true && startDateTime >= endDateTime)
+                ||(checkboxDateTime.isChecked()==true && endDateTime <=curMillis)
+                ||(checkboxDateTime.isChecked()==true && endDateTime <=startDateTime))
+            valid = false;
+
+        else if(checkboxNotifyDateTime.isChecked()==true && checkboxDateTime.isChecked()==false)
+            valid = false;
+
+        return valid;
     }
 
     void makeDateTimeDialogue(int id) {
@@ -224,7 +302,8 @@ public class CreateReminder extends AppCompatActivity implements TextView.OnClic
 
     }
 
-    private void checkForSuitableDateSelection() {
+    private boolean checkForSuitableDateSelection() {
+        boolean validation  = true;
         java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("dd/MMM/yyyy, HH:mm:ss");
         formatter.setLenient(false);
 //        Date curDate = new Date();
@@ -246,26 +325,30 @@ public class CreateReminder extends AppCompatActivity implements TextView.OnClic
 
             if (notifyDateTime < startDateTime && startDateTime < endDateTime) {
 
+                validation = true;
             } else {
                 Toast.makeText(this, "Date-Time is not set correctly", Toast.LENGTH_SHORT).show();
                 textView_end_date.setText("Date");
                 textView_end_time.setText("Time");
                 textView_notify_date.setText("Date");
                 textView_notify_time.setText("Time");
+                validation = false;
             }
 
             Date curDate = new Date();
             long curMillis = curDate.getTime();
 
-            if (curMillis <= notifyDateTime) {
+            if (curMillis >= notifyDateTime) {
                 Toast.makeText(this, "Notify time cant be less than Current Time!", Toast.LENGTH_SHORT).show();
                 textView_notify_date.setText("Date");
                 textView_notify_time.setText("Time");
+                validation = false;
             }
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        return validation;
     }
 
     private void initContents() {
@@ -275,6 +358,21 @@ public class CreateReminder extends AppCompatActivity implements TextView.OnClic
         textView_end_time = (TextView) findViewById(R.id.textView_end_time);
         textView_notify_date = (TextView) findViewById(R.id.textView_notify_date);
         textView_notify_time = (TextView) findViewById(R.id.textView_notify_time);
+        taskOverView = (EditText) findViewById(R.id.editText_task_overview);
+        subTasks = (EditText) findViewById(R.id.editText_subtasks);
+        saveButton = (Button) findViewById(R.id.saveButton);
+
+        checkboxDateTime = (CheckBox) findViewById(R.id.set_time_checkBox);
+        checkboxNotifyDateTime = (CheckBox) findViewById(R.id.notify_allDay_checkBox);
+        checkboxNotifyAt = (CheckBox) findViewById(R.id.checkbox_notifyAt);
+
+        clearNotifyTimeDate = (ImageButton) findViewById(R.id.imageButton_clearNotifyTimeDate);
+        clearTimeDate = (ImageButton) findViewById(R.id.imageButton_clearTimeDate);
+
+        clearNotifyTimeDate.setOnClickListener(this);
+        clearTimeDate.setOnClickListener(this);
+
+        saveButton.setOnClickListener(this);
 
         textView_start_date.setOnClickListener(this);
         textView_end_date.setOnClickListener(this);

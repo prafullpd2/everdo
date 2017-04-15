@@ -31,11 +31,11 @@
 
     <EditText
         android:id="@+id/editText_subtasks"
-        android:layout_width="350dp"
+        android:layout_width="0dp"
         android:layout_height="65dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="0dp"
         android:ems="10"
         android:inputType="textMultiLine"
         app:layout_constraintHorizontal_bias="0.0"
@@ -177,27 +177,31 @@
         android:layout_marginLeft="16dp"
         app:layout_constraintHorizontal_bias="0.0" />
 
-    <TextView
-        android:id="@+id/textView7"
+    <CheckBox
+        android:id="@+id/checkbox_notifyAt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+
+        android:checked="true"
+        android:onClick="onCheckBoxClick"
         android:text="Notify at"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@+id/fragment_location_picker" />
 
     <TextView
         android:id="@+id/textView_notify_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="16dp"
         android:text="Date"
         app:layout_constraintTop_toBottomOf="@+id/fragment_location_picker"
-        app:layout_constraintLeft_toRightOf="@+id/textView7"
+        app:layout_constraintLeft_toRightOf="@+id/checkbox_notifyAt"
         android:layout_marginLeft="8dp"
         app:layout_constraintRight_toLeftOf="@+id/notify_allDay_checkBox"
-        android:layout_marginRight="8dp" />
+        android:layout_marginRight="8dp"
+        app:layout_constraintHorizontal_bias="0.092" />
 
     <TextView
         android:id="@+id/textView_notify_time"
@@ -224,7 +228,7 @@
         app:layout_constraintRight_toRightOf="parent" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -234,5 +238,59 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_notify_date" />
+
+    <ImageButton
+        android:id="@+id/imageButton_clearNotifyTimeDate"
+        android:layout_width="17sp"
+        android:layout_height="17sp"
+        android:padding="0sp"
+        android:scaleType="centerInside"
+        app:srcCompat="@android:drawable/ic_delete"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_location_picker"
+        app:layout_constraintLeft_toRightOf="@+id/textView_notify_time"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintRight_toLeftOf="@+id/notify_allDay_checkBox"
+        android:layout_marginRight="8dp"
+        app:layout_constraintHorizontal_bias="0.74" />
+
+    <ImageButton
+        android:id="@+id/imageButton6"
+        android:layout_width="17sp"
+        android:layout_height="17sp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="15dp"
+        android:padding="0sp"
+        android:scaleType="centerInside"
+
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText_subtasks"
+        app:srcCompat="@android:drawable/ic_delete" />
+
+    <ImageButton
+        android:id="@+id/imageButton4"
+        android:layout_width="17sp"
+        android:layout_height="17sp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="15dp"
+        android:padding="0sp"
+        android:scaleType="centerInside"
+
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText_subtasks"
+        app:srcCompat="@android:drawable/ic_delete" />
+
+    <ImageButton
+        android:id="@+id/imageButton_clearTimeDate"
+        android:layout_width="17sp"
+        android:layout_height="17sp"
+        android:layout_marginRight="16dp"
+        android:padding="0sp"
+        android:scaleType="centerInside"
+        app:layout_constraintRight_toRightOf="parent"
+
+        app:srcCompat="@android:drawable/ic_delete"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@+id/editText_subtasks" />
 
 </android.support.constraint.ConstraintLayout>
