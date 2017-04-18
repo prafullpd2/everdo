@@ -14,6 +14,9 @@ public class ReminderElements {
     String startAt;
     String endAt;
 
+    String localID;
+    String serverID;
+
     public String getTaskOverview() {
         return taskOverview;
     }

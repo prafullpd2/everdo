@@ -17,13 +17,27 @@ import java.util.List;
 public class ReminderRecyclerAdapter extends RecyclerView.Adapter<ReminderRecyclerAdapter.MyViewHolder> {
 
     LayoutInflater inflater;
+    Context context;
     List<ReminderElements> elements = Collections.emptyList();
+//    ReminderDatabaseAdapter databaseAdapter = new ReminderDatabaseAdapter(context);
 
     public ReminderRecyclerAdapter(Context context, List<ReminderElements> elements) {
         inflater = LayoutInflater.from(context);
+        this.context = context;
         this.elements = elements;
     }
 
+    public void deleteReminderCard(int posiiton){
+        ReminderDatabaseAdapter databaseAdapter = new ReminderDatabaseAdapter(context);
+
+        ReminderElements element = elements.get(posiiton);
+
+        databaseAdapter.deleteReminder(Integer.parseInt(element.localID));
+
+        elements.remove(posiiton);
+        notifyItemRemoved(posiiton);
+
+    }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -34,7 +48,7 @@ public class ReminderRecyclerAdapter extends RecyclerView.Adapter<ReminderRecycl
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
         ReminderElements currentElement = elements.get(position);
         holder.taskOverview.setText(currentElement.taskOverview);
         holder.subtasks.setText(currentElement.subtasks);
@@ -45,6 +59,7 @@ public class ReminderRecyclerAdapter extends RecyclerView.Adapter<ReminderRecycl
         holder.startAt.setText(currentElement.startAt);
         holder.endAt.setText(currentElement.endAt);
 
+
     }
 
     @Override
@@ -52,7 +67,7 @@ public class ReminderRecyclerAdapter extends RecyclerView.Adapter<ReminderRecycl
         return elements.size();
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
+    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView taskOverview;
         TextView subtasks;
@@ -73,7 +88,13 @@ public class ReminderRecyclerAdapter extends RecyclerView.Adapter<ReminderRecycl
             isDone = (TextView) itemView.findViewById(R.id.card_is_done);
             startAt = (TextView) itemView.findViewById(R.id.card_starting_time);
             endAt = (TextView) itemView.findViewById(R.id.card_end_time);
+            deleteTask.setOnClickListener(this);
 
+        }
+
+        @Override
+        public void onClick(View v) {
+            deleteReminderCard(getAdapterPosition());
         }
     }
 }

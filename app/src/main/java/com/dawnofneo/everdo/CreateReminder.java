@@ -2,6 +2,7 @@ package com.dawnofneo.everdo;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.icu.text.DateFormat;
 import android.icu.text.SimpleDateFormat;
@@ -49,14 +50,15 @@ public class CreateReminder extends AppCompatActivity implements TextView.OnClic
     Button saveButton;
     ImageButton clearTimeDate, clearNotifyTimeDate;
     LatLng taskLatLang;
-    String taskLocationName;
+
+    String taskLocationName =null;
     java.util.Calendar c;
     int hour, min, year, month, day, id;
     private String newDateInString;
     String startDate, endDate, notifyDate, startTime, endTime, notifyTime;
     long startDateTime, endDateTime, notifyDateTime;
     private Time timeValue;
-    CheckBox checkboxDateTime,checkboxNotifyDateTime,checkboxNotifyAt;
+    CheckBox checkboxDateTime, checkboxNotifyDateTime, checkboxNotifyAt;
     int normalColor;
 
     @Override
@@ -66,11 +68,14 @@ public class CreateReminder extends AppCompatActivity implements TextView.OnClic
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         locaitonPickerFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.fragment_location_picker);
-        locaitonPickerFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+        locaitonPickerFragment.setOnPlaceSelectedListener(new PlaceSelectionListener()
+        {
 
             @Override
             public void onPlaceSelected(Place place) {
                 Log.i("TAG", "Place: " + place.getName());
+                taskLocationName = place.getName().toString();
+                taskLatLang = place.getLatLng();
                 Snackbar.make(findViewById(R.id.create_reminder_layout), "selected " + place.getName() + ", " + place.getLatLng(), Snackbar.LENGTH_LONG);
                 Toast.makeText(CreateReminder.this, "" + place.getName(), Toast.LENGTH_SHORT).show();
 
@@ -189,17 +194,55 @@ public class CreateReminder extends AppCompatActivity implements TextView.OnClic
 
         } else if (id == R.id.imageButton_clearNotifyTimeDate) {
 
-            textView_notify_date .setText("Date");
+            textView_notify_date.setText("Date");
             textView_notify_time.setText("Time");
 
-        }
+        } else if (id == R.id.saveButton) {
 
-        else if (id == R.id.saveButton) {
+            if (checkDataForSaving()) {
 
-            if(checkDataForSaving()){
+                String taskOverview = taskOverView.getText().toString();
+                String subtasks = subTasks.getText().toString();
+                String notifyAllDay = "no";
+                long startMilliSec = -1, endMilliSec = -1, notifyMilliSec = -1;
+                String locationName = null;
+                String locationLAT = null;
+                String locationLANG = null;
 
-            }
-            else
+
+                if (checkboxDateTime.isChecked() == true) {
+                    startMilliSec = startDateTime;
+                    endMilliSec = endDateTime;
+                }
+                if (checkboxNotifyAt.isChecked() == true) {
+                    if (checkboxNotifyDateTime.isChecked())
+                        notifyAllDay = "yes";
+                    else
+                        notifyMilliSec = notifyDateTime;
+                }
+                if (taskLocationName!=null) {
+                    locationName = taskLocationName;
+                    locationLANG = String.valueOf(taskLatLang.longitude);
+                    locationLAT = String.valueOf(taskLatLang.latitude);
+                    Toast.makeText(this, "Location Perfect", Toast.LENGTH_SHORT).show();
+                }
+
+                ReminderDatabaseAdapter databaseAdapter = new ReminderDatabaseAdapter(getApplicationContext());
+                long response = databaseAdapter.insertReminderData(taskOverview, subtasks,
+                        String.valueOf(startMilliSec), String.valueOf(endMilliSec),
+                        locationName, locationLAT, locationLANG, String.valueOf(notifyMilliSec), notifyAllDay);
+
+                if (response <= 0)
+                    Toast.makeText(this, "not Success", Toast.LENGTH_SHORT).show();
+                else {
+                    Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
+                    Intent intent= new Intent(getApplication(),Transition.class);
+                    startActivity(intent);
+                    finish();
+                }
+
+
+            } else
                 Toast.makeText(this, "Something wrong is chosen!!!", Toast.LENGTH_SHORT).show();
 
 
@@ -211,19 +254,23 @@ public class CreateReminder extends AppCompatActivity implements TextView.OnClic
         boolean valid = true;
         Date curDate = new Date();
         long curMillis = curDate.getTime();
-        if(taskOverView.getText().toString().equals(""))
+        if (taskOverView.getText().toString().equals(""))
             valid = false;
 
-        else if((checkboxNotifyAt.isChecked()==true && notifyDateTime<=curMillis ))
+//        else if ((checkboxNotifyAt.isChecked() == true && notifyDateTime <= curMillis))
+//            valid = false;
+
+        else if ((checkboxDateTime.isChecked() == true && startDateTime <= curMillis)
+                || (checkboxDateTime.isChecked() == true && startDateTime >= endDateTime)
+                || (checkboxDateTime.isChecked() == true && endDateTime <= curMillis)
+                || (checkboxDateTime.isChecked() == true && endDateTime <= startDateTime))
             valid = false;
 
-        else if(  (checkboxDateTime.isChecked()==true && startDateTime <=curMillis)
-                ||(checkboxDateTime.isChecked()==true && startDateTime >= endDateTime)
-                ||(checkboxDateTime.isChecked()==true && endDateTime <=curMillis)
-                ||(checkboxDateTime.isChecked()==true && endDateTime <=startDateTime))
+        else if (checkboxNotifyDateTime.isChecked() == true && checkboxDateTime.isChecked() == false)
             valid = false;
-
-        else if(checkboxNotifyDateTime.isChecked()==true && checkboxDateTime.isChecked()==false)
+        else if ((checkboxDateTime.isChecked() == true && textView_start_date.getText().toString().equals("Date")) ||
+                (checkboxDateTime.isChecked() == true && textView_end_date.getText().toString().equals("Date")) ||
+                (checkboxNotifyAt.isChecked() == true && checkboxNotifyDateTime.isChecked() == false && textView_notify_date.getText().toString().equals("Date")))
             valid = false;
 
         return valid;
@@ -303,7 +350,7 @@ public class CreateReminder extends AppCompatActivity implements TextView.OnClic
     }
 
     private boolean checkForSuitableDateSelection() {
-        boolean validation  = true;
+        boolean validation = true;
         java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("dd/MMM/yyyy, HH:mm:ss");
         formatter.setLenient(false);
 //        Date curDate = new Date();
