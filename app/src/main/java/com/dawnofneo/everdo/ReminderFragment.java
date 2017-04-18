@@ -12,6 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -42,6 +45,9 @@ public class ReminderFragment extends Fragment {
     ReminderDatabaseAdapter databaseAdapter;
 
     private OnFragmentInteractionListener mListener;
+    private View layout;
+    final int ID = 8;
+    private TextView editText;
 
     public ReminderFragment() {
         // Required empty public constructor
@@ -77,10 +83,25 @@ public class ReminderFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(databaseAdapter.getAllReminderDataList().isEmpty()==false)
-            adapter = new ReminderRecyclerAdapter(getActivity(),databaseAdapter.getAllReminderDataList());
-        else
-            adapter = new ReminderRecyclerAdapter(getActivity(),getElements());
+        if (databaseAdapter.getAllReminderDataList().isEmpty() == false) {
+            adapter = new ReminderRecyclerAdapter(getActivity(), databaseAdapter.getAllReminderDataList());
+            LinearLayout linearLayout = (LinearLayout) layout.findViewById(R.id.fragment_linearLayout);
+            linearLayout.removeView(editText);
+        } else {
+            editText = new TextView(getActivity());
+            editText.setText("No Reminder");
+            editText.setGravity(View.TEXT_ALIGNMENT_CENTER);
+
+
+
+            editText.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            LinearLayout linearLayout = (LinearLayout) layout.findViewById(R.id.fragment_linearLayout);
+            linearLayout.addView(editText);
+
+
+//            adapter = new ReminderRecyclerAdapter(getActivity(),getElements());
+
+        }
         reminderRecyclerView.setAdapter(adapter);
         Toast.makeText(getActivity(), "Resumed", Toast.LENGTH_SHORT).show();
     }
@@ -89,14 +110,17 @@ public class ReminderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View layout = inflater.inflate(R.layout.fragment_reminder, container, false);
+        layout = inflater.inflate(R.layout.fragment_reminder, container, false);
         reminderRecyclerView = (RecyclerView) layout.findViewById(R.id.reminder_recyclerView);
 
         databaseAdapter = new ReminderDatabaseAdapter(getContext());
-        if(databaseAdapter.getAllReminderDataList().isEmpty()==false)
-            adapter = new ReminderRecyclerAdapter(getActivity(),databaseAdapter.getAllReminderDataList());
-        else
-            adapter = new ReminderRecyclerAdapter(getActivity(),getElements());
+        if (databaseAdapter.getAllReminderDataList().isEmpty() == false)
+            adapter = new ReminderRecyclerAdapter(getActivity(), databaseAdapter.getAllReminderDataList());
+        else {
+
+
+//            adapter = new ReminderRecyclerAdapter(getActivity(),getElements());
+        }
         reminderRecyclerView.setAdapter(adapter);
         reminderRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -106,7 +130,7 @@ public class ReminderFragment extends Fragment {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                Intent intent = new Intent(getActivity(),CreateReminder.class);
+                Intent intent = new Intent(getActivity(), CreateReminder.class);
                 startActivity(intent);
             }
         });
@@ -137,28 +161,29 @@ public class ReminderFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-    public static List<ReminderElements> getElements(){
-        List<ReminderElements> elementsList = new ArrayList<>();
-        String taskOverview[] = {"task 1","task 2","task 3","task 4","task 5","task 6","task 7","task 8"};
-        String subtasks[]= {"subtask 1","subtask 2","subhello neo hello neo hello hello heool hello ehelllo task 3","subtask 4","subtask 5","subtask 6","subtask 7","subtask 8"};
-        String notifyAt[]={"notify 1","notify 2","notify 3","notify 4","notify 5","notify 6","notify 7","notify 8"};
-        String taskLocation[]= {"Location 1","Location 2","Location 3","Location 4","Location 5","Location 6","Location 7","Location 8"};
-        String deleteTask[]= {"del 1","del 2","del 3","del 4","del 5","del 6","del 7","del 8"};
-        String isDone[]= {"isdone 1","isdone 2","isdone 3","isdone 4","isdone 5","isdone 6","isdone 7","isdone 8"};
-        String startAt[]= {"start 1","start 2","start 3","start 4","start 5","start 6","start 7","start 8"};
-        String endAt[]= {"end 1","end 2","end 3","end 4","end 5","end 6","end 7","end 8"};
 
-        for(int i = 0;i<taskOverview.length&&i<subtasks.length&&i<notifyAt.length&&i<taskLocation.length&&i<deleteTask.length&&i<isDone.length&&i<startAt.length&&i<endAt.length;i++){
+    public static List<ReminderElements> getElements() {
+        List<ReminderElements> elementsList = new ArrayList<>();
+        String taskOverview[] = {"task 1", "task 2", "task 3", "task 4", "task 5", "task 6", "task 7", "task 8"};
+        String subtasks[] = {"subtask 1", "subtask 2", "subhello neo hello neo hello hello heool hello ehelllo task 3", "subtask 4", "subtask 5", "subtask 6", "subtask 7", "subtask 8"};
+        String notifyAt[] = {"notify 1", "notify 2", "notify 3", "notify 4", "notify 5", "notify 6", "notify 7", "notify 8"};
+        String taskLocation[] = {"Location 1", "Location 2", "Location 3", "Location 4", "Location 5", "Location 6", "Location 7", "Location 8"};
+        String deleteTask[] = {"del 1", "del 2", "del 3", "del 4", "del 5", "del 6", "del 7", "del 8"};
+        String isDone[] = {"isdone 1", "isdone 2", "isdone 3", "isdone 4", "isdone 5", "isdone 6", "isdone 7", "isdone 8"};
+        String startAt[] = {"start 1", "start 2", "start 3", "start 4", "start 5", "start 6", "start 7", "start 8"};
+        String endAt[] = {"end 1", "end 2", "end 3", "end 4", "end 5", "end 6", "end 7", "end 8"};
+
+        for (int i = 0; i < taskOverview.length && i < subtasks.length && i < notifyAt.length && i < taskLocation.length && i < deleteTask.length && i < isDone.length && i < startAt.length && i < endAt.length; i++) {
             ReminderElements element = new ReminderElements();
-            element. taskOverview = taskOverview[i];
-            element. subtasks = subtasks[i];
-            element. notifyAt = notifyAt[i];
-            element. taskLocation = taskLocation[i];
-            element. deleteTask = deleteTask[i];
-            element. isDone = isDone[i];
-            element. startAt = startAt[i];
-            element. endAt = endAt[i];
-            elementsList.add(i,element);
+            element.taskOverview = taskOverview[i];
+            element.subtasks = subtasks[i];
+            element.notifyAt = notifyAt[i];
+            element.taskLocation = taskLocation[i];
+            element.deleteTask = deleteTask[i];
+            element.isDone = isDone[i];
+            element.startAt = startAt[i];
+            element.endAt = endAt[i];
+            elementsList.add(i, element);
         }
         return elementsList;
 
