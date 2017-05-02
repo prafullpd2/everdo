@@ -1,7 +1,11 @@
 package com.dawnofneo.everdo;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.icu.text.DateFormat;
@@ -12,6 +16,8 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -51,7 +57,7 @@ public class CreateReminder extends AppCompatActivity implements TextView.OnClic
     ImageButton clearTimeDate, clearNotifyTimeDate;
     LatLng taskLatLang;
 
-    String taskLocationName =null;
+    String taskLocationName = null;
     java.util.Calendar c;
     int hour, min, year, month, day, id;
     private String newDateInString;
@@ -68,8 +74,7 @@ public class CreateReminder extends AppCompatActivity implements TextView.OnClic
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         locaitonPickerFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.fragment_location_picker);
-        locaitonPickerFragment.setOnPlaceSelectedListener(new PlaceSelectionListener()
-        {
+        locaitonPickerFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
 
             @Override
             public void onPlaceSelected(Place place) {
@@ -220,7 +225,7 @@ public class CreateReminder extends AppCompatActivity implements TextView.OnClic
                     else
                         notifyMilliSec = notifyDateTime;
                 }
-                if (taskLocationName!=null) {
+                if (taskLocationName != null) {
                     locationName = taskLocationName;
                     locationLANG = String.valueOf(taskLatLang.longitude);
                     locationLAT = String.valueOf(taskLatLang.latitude);
@@ -235,8 +240,39 @@ public class CreateReminder extends AppCompatActivity implements TextView.OnClic
                 if (response <= 0)
                     Toast.makeText(this, "not Success", Toast.LENGTH_SHORT).show();
                 else {
+
+                    Intent moreInfoIntent = new Intent(getApplicationContext(), ReminderNotificationReceiver.class);
+                    Toast.makeText(getApplicationContext(), "InComing Msg", Toast.LENGTH_SHORT).show();
+                    moreInfoIntent.putExtra("CONTENT_TITLE", "New Task")
+                            .putExtra("CONTENT_TEXT", taskOverview)
+                            .putExtra("NOTIFICATION_ID", 1);
+                    AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                    alarmManager.set(AlarmManager.RTC_WAKEUP,
+                            notifyMilliSec,
+                            PendingIntent.getBroadcast(getApplicationContext(), 0, moreInfoIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+
+                    //instant notification
+//                    NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+//                            .setContentTitle("New Task")
+//                            .setContentText(taskOverview)
+//                            .setTicker("Alert")
+//                            .setSmallIcon(R.drawable.alert_icon);
+//                    Intent notificationIntent = new Intent(this,Transition.class);
+//                    TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
+//                    taskStackBuilder.addParentStack(Transition.class);
+//                    taskStackBuilder.addNextIntent(notificationIntent);
+//
+//                    PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//                    notificationBuilder.setContentIntent(pendingIntent);
+//                    notificationBuilder.setDefaults(NotificationCompat.DEFAULT_ALL);
+//                    notificationBuilder.setAutoCancel(true);
+//
+//                    NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//                    notificationManager.notify(1, notificationBuilder.build());
+
                     Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
-                    Intent intent= new Intent(getApplication(),Transition.class);
+                    Intent intent = new Intent(getApplication(), Transition.class);
                     startActivity(intent);
                     finish();
                 }

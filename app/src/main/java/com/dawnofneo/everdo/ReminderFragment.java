@@ -84,7 +84,7 @@ public class ReminderFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (databaseAdapter.getAllReminderDataList().isEmpty() == false) {
-            adapter = new ReminderRecyclerAdapter(getActivity(), databaseAdapter.getAllReminderDataList());
+            adapter = new ReminderRecyclerAdapter(getActivity().getApplicationContext(), databaseAdapter.getAllReminderDataList());
             LinearLayout linearLayout = (LinearLayout) layout.findViewById(R.id.fragment_linearLayout);
             linearLayout.removeView(editText);
         } else {

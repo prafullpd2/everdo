@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -67,6 +69,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.dawnofneo.everdo.Transition" />
         </activity>
+
+
+
+        <receiver android:name="com.dawnofneo.everdo.ReminderNotificationReceiver" />
     </application>
 
 </manifest>

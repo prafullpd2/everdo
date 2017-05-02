@@ -1,13 +1,22 @@
 package com.dawnofneo.everdo;
 
+import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.app.TaskStackBuilder;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,6 +28,8 @@ public class ReminderRecyclerAdapter extends RecyclerView.Adapter<ReminderRecycl
     LayoutInflater inflater;
     Context context;
     List<ReminderElements> elements = Collections.emptyList();
+    NotificationManager notificationManager;
+    boolean isNotificationActive;
 //    ReminderDatabaseAdapter databaseAdapter = new ReminderDatabaseAdapter(context);
 
     public ReminderRecyclerAdapter(Context context, List<ReminderElements> elements) {
@@ -49,18 +60,53 @@ public class ReminderRecyclerAdapter extends RecyclerView.Adapter<ReminderRecycl
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
+
+        java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("dd/MMM HH:mm");
+
         ReminderElements currentElement = elements.get(position);
-        holder.taskOverview.setText(currentElement.taskOverview);
-        holder.subtasks.setText(currentElement.subtasks);
-        holder.notifyAt.setText(currentElement.notifyAt);
-        holder.taskLocation.setText(currentElement.taskLocation);
+        holder.taskOverview.setText("TASK-"+currentElement.taskOverview);
+        holder.subtasks.setText("SUBTASK-"+currentElement.subtasks);
+        try {
+            holder.notifyAt.setText("at"+format.format(Long.parseLong(currentElement.notifyAt)));
+            holder.startAt.setText("From"+format.format(Long.parseLong(currentElement.startAt)));
+            holder.endAt.setText("to"+format.format(Long.parseLong(currentElement.endAt)));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        holder.taskLocation.setText("LOCATION"+currentElement.taskLocation);
         holder.deleteTask.setText(currentElement.deleteTask);
-        holder.isDone.setText(currentElement.isDone);
-        holder.startAt.setText(currentElement.startAt);
-        holder.endAt.setText(currentElement.endAt);
+        holder.isDone.setText("isDone"+currentElement.isDone);
+
+        if((currentElement.notifyAt!=null||currentElement.notifyAt!="")&&Long.parseLong(currentElement.notifyAt)>new Date().getTime()){
+//            AlarmManager alarms = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+//
+//            ReminderNotificationReceiver receiver = new ReminderNotificationReceiver();
+//            IntentFilter filter = new IntentFilter("ALARM_ACTION");
+////            registerReceiver(receiver, filter);
+//            context.registerReceiver(receiver,filter);
+//
+//            Intent intent = new Intent("ALARM_ACTION");
+//            intent.putExtra("param", "TASK - "+currentElement.taskOverview);
+//            PendingIntent operation = PendingIntent.getBroadcast(context, Integer.parseInt(currentElement.localID), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//            // I choose 3s after the launch of my application
+//            alarms.set(AlarmManager.RTC_WAKEUP, Long.parseLong(currentElement.notifyAt), operation) ;
+
+//
+//            Intent moreInfoIntent = new Intent(context, ReminderNotificationReceiver.class);
+//            Toast.makeText(context, "InComming Msg", Toast.LENGTH_SHORT).show();
+//            moreInfoIntent.putExtra("CONTENT_TITLE","New Task")
+//                    .putExtra("CONTENT_TEXT",currentElement.taskOverview)
+//                    .putExtra("NOTIFICATION_ID",Integer.parseInt(currentElement.localID));
+//            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+//            alarmManager.set(AlarmManager.RTC_WAKEUP,
+//                    Long.parseLong(currentElement.notifyAt),
+//                    PendingIntent.getBroadcast(context, 1, moreInfoIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+        }
 
 
     }
+
+
 
     @Override
     public int getItemCount() {
